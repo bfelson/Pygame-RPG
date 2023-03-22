@@ -12,7 +12,6 @@ class Game:
         self.running = True
 
     def new(self):
-        print("creating new game")
         #new game starts
         self.playing = True
 
@@ -55,7 +54,6 @@ class Game:
 
 
 g = Game()
-print("Game created")
 g.intro_screen()
 g.new()
 while g.running:

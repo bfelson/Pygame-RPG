@@ -6,7 +6,6 @@ import random
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        print("Player Object initialized")
         self.game = game
         self._layer = PLAYER_LAYER
         self.groups = self.game.all_sprites
@@ -32,18 +31,15 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = self.y
 
     def update(self):
-        print("Player object updated")
         self.movement()
-        print(self.facing)
 
-        self.x += self.vx
-        self.y += self.vy
+        self.rect.x += self.vx
+        self.rect.y += self.vy
 
         self.vx = 0
         self.vy = 0
 
     def movement(self):
-        print("Player Object movement checked")
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.vx -= PLAYER_SPEED
@@ -55,6 +51,6 @@ class Player(pygame.sprite.Sprite):
             self.vy -= PLAYER_SPEED
             self.facing = 'up'
         if keys[pygame.K_DOWN]:
-            self.vy -= PLAYER_SPEED
+            self.vy += PLAYER_SPEED
             self.facing = 'down'
         
