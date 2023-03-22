@@ -12,6 +12,7 @@ class Game:
         self.running = True
 
     def new(self):
+        print("creating new game")
         #new game starts
         self.playing = True
 
@@ -27,8 +28,6 @@ class Game:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
-
-
 
     def update(self):
         self.all_sprites.update()
@@ -54,7 +53,9 @@ class Game:
     def intro_screen(self):
         pass
 
+
 g = Game()
+print("Game created")
 g.intro_screen()
 g.new()
 while g.running:
