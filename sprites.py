@@ -38,24 +38,35 @@ class Player(pygame.sprite.Sprite):
         self.vy = 0
 
         self.facing = 'down'
+        self.animation_loop = 1
 
         self.image = self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height) #= 32,32
-        #after this line, go to block class
-
-        #load in image
-        #image_to_load = pygame.image.load('img\single.png') #single picture
-
-        #EVENTUALLY TAKE THESE OUT
-        # self.image = pygame.Surface([self.width, self.height])
-        # self.image.set_colorkey(BLACK) #makes the specified color to transparent (png)
-        # self.image.blit(image_to_load, (0,0)) #blit displays an image on a surface
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
 
+                #load in images of animations, all located in character.png
+        self.down_animations = [self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(35, 2, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(68, 2, self.width, self.height),]
+
+        self.up_animations = [self.game.character_spritesheet.get_sprite(3, 34, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(35, 34, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(68, 34, self.width, self.height),]
+        
+        self.left_animations = [self.game.character_spritesheet.get_sprite(3, 98, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(35, 98, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(68, 98, self.width, self.height),]
+        
+        self.right_animations = [self.game.character_spritesheet.get_sprite(3, 66, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(35, 66, self.width, self.height),
+                           self.game.character_spritesheet.get_sprite(68, 66, self.width, self.height),]
+
+
     def update(self):
         self.movement()
+        self.animate()
 
         self.rect.x += self.vx
         self.collide_blocks('x')
@@ -80,6 +91,61 @@ class Player(pygame.sprite.Sprite):
             self.vy += PLAYER_SPEED
             self.facing = 'down'
 
+        
+        if self.facing == 'down':
+            #if standing still, set to static image
+            #otherwise, from down animation loop get correct images
+            if self.vy == 0:
+                self.image = self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height) 
+            else:
+                self.image = self.down_animations[math.floor(self.animation_loop)]
+                #using 0.1, animation will change every 10 frames
+                self.animation_loop += 0.1
+                #only 3 images in list
+                if self.animation_loop >= 3:
+                    self.animation_loop = 1
+
+        if self.facing == 'up':
+            #if standing still, set to static image
+            #otherwise, from down animation loop get correct images
+            if self.vy == 0:
+                self.image = self.game.character_spritesheet.get_sprite(3, 34, self.width, self.height) 
+            else:
+                self.image = self.up_animations[math.floor(self.animation_loop)]
+                #using 0.1, animation will change every 10 frames
+                self.animation_loop += 0.1
+                #only 3 images in list
+                if self.animation_loop >= 3:
+                    self.animation_loop = 1
+
+        if self.facing == 'left':
+            #if standing still, set to static image
+            #otherwise, from down animation loop get correct images
+            if self.vx == 0:
+                self.image = self.game.character_spritesheet.get_sprite(3, 98, self.width, self.height) 
+            else:
+                self.image = self.left_animations[math.floor(self.animation_loop)]
+                #using 0.1, animation will change every 10 frames
+                self.animation_loop += 0.1
+                #only 3 images in list
+                if self.animation_loop >= 3:
+                    self.animation_loop = 1
+
+        if self.facing == 'right':
+            #if standing still, set to static image
+            #otherwise, from down animation loop get correct images
+            if self.vx == 0:
+                self.image = self.game.character_spritesheet.get_sprite(3, 66, self.width, self.height) 
+            else:
+                self.image = self.right_animations[math.floor(self.animation_loop)]
+                #using 0.1, animation will change every 10 frames
+                self.animation_loop += 0.1
+                #only 3 images in list
+                if self.animation_loop >= 3:
+                    self.animation_loop = 1
+
+
+
     def collide_blocks(self, direction):
         if direction == "x":
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False) #check if player rect inside of blocks rect, false means dont delete on collide
@@ -96,6 +162,10 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.vy < 0:
                     self.rect.y = hits[0].rect.bottom
+
+    def animate(self):
+        pass
+
         
 class Block(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
