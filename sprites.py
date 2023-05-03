@@ -58,7 +58,9 @@ class Player(pygame.sprite.Sprite):
         self.movement()
 
         self.rect.x += self.vx
+        self.collide_blocks('x')
         self.rect.y += self.vy
+        self.collide_blocks('y')
 
         self.vx = 0
         self.vy = 0
@@ -77,6 +79,23 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_DOWN]:
             self.vy += PLAYER_SPEED
             self.facing = 'down'
+
+    def collide_blocks(self, direction):
+        if direction == "x":
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False) #check if player rect inside of blocks rect, false means dont delete on collide
+            if hits:
+                if self.vx > 0:
+                    self.rect.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.rect.x = hits[0].rect.right
+            
+        if direction == "y":
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False) #check if player rect inside of blocks rect, false means dont delete on collide
+            if hits:
+                if self.vy > 0: #down
+                    self.rect.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.rect.y = hits[0].rect.bottom
         
 class Block(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
